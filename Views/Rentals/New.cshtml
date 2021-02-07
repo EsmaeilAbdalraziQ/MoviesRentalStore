@@ -1,0 +1,185 @@
+﻿
+
+@model dynamic
+
+
+@{
+    ViewBag.Title = "New Rental Form";
+}
+<div class="container">
+    <div class="row">
+        <!-- ----------------- Movies Form ---------------------------------- -->
+        <div class="col-md-4 col-sm-4">
+
+            <h2>New Rental Form</h2>
+
+            <!-- @* @Ajax.BeginForm() *@ This Helper Method Designed to call Actions in MVC Controllers Not API Controllers -->
+
+            <form id="newRental">
+                <!-- div.form-group>label+input[typy='text'].form-control -->
+                <div class="form-group">
+                    <label>Customer</label>
+                    <div class="tt-container">
+                        <input id="customer" name="customer" data-rule-validCustomer="true" type="text" value="" required class="form-control" />
+                    </div>
+                </div>
+
+                <!-- div.form-group>label+input[typy='text'].form-control -->
+                <div class="form-group">
+                    <label>Movie</label>
+                    <div class="tt-container">
+                        <input id="movie" name="movie" data-rule-atLeastOneMovie="true" typy="text" value="" class="form-control" />
+                    </div>
+                </div>
+
+                <!-- button.btn.btn-success -->
+                <button class="btn btn-success">Submit</button>
+            </form>
+        </div><!-- EndOfForm  -->
+        <!-- ----------------- Movies List ---------------------------------- -->
+        <!-- div.row>div.col-md-4.col-sm.4 -->
+        <div class="col-md-4 col-sm-4 offset-md-2">
+                <!--  ul#movies.list-group -->
+                <ul id="movies" class="list-group">
+                </ul>
+        </div><!-- EndOfList  -->
+
+    </div>
+</div>
+
+
+@section scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+
+<script>
+
+    $(document).ready(function () {
+
+        //--------- Customer Typeahead --------------
+
+        //viewModel To Store the Customer and Movies
+        var viewModel = {
+            movieIds: []    //To Push Object here for Movies
+        };
+
+        //Bloodhound Object is Suggetion Engine Behind Typeahead,
+        //it is Encapsulate all Business Logic for all Completion
+        var customers = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            remote: {
+                //this variable is specified for what user types in textBox
+                url: '/api/customers?query=%QUERY',
+                wildcard: '%QUERY'
+            }
+        });
+
+        $('#customer').typeahead({
+            minLength: 2,
+            highlight: true
+        }, {
+            name: 'customers',
+            display: 'name',
+            source: customers
+        }).on("typeahead:select", function (e, customer) {
+            //When we get this customer we need To store Customer to somewhere {ViewModel}
+            viewModel.customerId = customer.id; //when User Submit the Form we send this 'viewModel' to 'API'
+
+        });
+
+        //--------- Movie Typeahead --------------
+
+        var movies = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            remote: {
+                url: '/api/movies?query=%QUERY',
+                wildcard: '%QUERY'
+            }
+        });
+
+        $('#movie').typeahead({
+            minLength: 2,
+            highlight: true
+        }, {
+            name: 'movies',
+            display: 'name',
+            source: movies
+        }).on("typeahead:select", function (e, movie) {
+            $("#movies").append("<li class='list-group-item'>" + movie.name + "</li>");
+
+            $("#movie").typeahead("val", "");
+
+            viewModel.movieIds.push(movie.id);
+        });
+
+        //--------- 'Form' 'Validate' ------------
+
+        //$("#newRental").validate(); //This way form will be submitted without validation
+
+        $.validator.addMethod("validCustomer", function () {
+            return viewModel.customerId && viewModel.customerId !== 0;
+        }, "Please Select a Valid Customer.!");
+
+
+        $.validator.addMethod("atLeastOneMovie", function () {
+            return viewModel.movieIds.length > 0;
+        }, "Please Select at Least One Movie.!");
+
+        var validator = $("#newRental").validate({
+
+            submitHandler: function () {
+                //e.preventDefault(); //Prevent form to submitting Normaly
+
+                $.ajax({
+                    url: "/api/newRentals",
+                    method: "post",
+                    data: viewModel
+                })
+                    .done(function () {
+                        //console.log("DONE.!");
+                        toastr.success("Rental Successfuly Recorded.!");
+
+                        //To Clear the 'Form' and the 'ViewModel'
+                        $("#customer").typeahead("val", "");
+                        $("#movie").typeahead("val", "");
+                        $("#movies").empty();
+                        viewModel = { movieIds: [] };
+                        //Rest th state of the form interms validation 
+                        validator.resetForm();
+                    })
+                    .fail(function () {
+                        //console.log("FAIL.!");
+                        toastr.error("Something Unexpected happen.!");
+                    });
+
+                return false; //To Prevent Submitted Form Normaly
+            }
+        });
+
+        //--------- Form Post Submit ------------
+
+        //$("#newRental").submit(function (e) {
+        //e.preventDefault(); //Prevent form to submitting Normaly
+
+        //$.ajax({
+        //    url: "/API/NewRentals",
+        //    method: "POST",
+        //    data: viewModel
+        //})
+        //    .done(function () {
+        //        //console.log("DONE.!");
+        //        toastr.success("Rental Successfuly Recorded.!");
+        //    })
+        //    .fail(function () {
+        //        //console.log("FAIL.!");
+        //        toastr.error("Rental Fail To Record.!");
+        //    });
+
+        //});
+
+    });
+
+</script>
+}

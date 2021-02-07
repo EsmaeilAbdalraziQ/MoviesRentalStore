@@ -1,0 +1,60 @@
+﻿
+@model Cinema.Models.Movie
+
+@{
+    ViewBag.Title = "Details";
+}
+
+
+<div class="container">
+    <h2>Movie Details</h2>
+    @*<input type="hidden" value="@Model.Id" />*@
+    @Html.HiddenFor(H => H.Id)
+    <table class="table table-bordered table-hover">
+
+        <tbody class="bg-light text-dark">
+            <tr>
+                <th>@Html.DisplayNameFor(d => d.Name)</th>
+                <td>@Html.DisplayFor(d => d.Name)</td>
+            </tr>
+            <tr>
+                <th>@Html.DisplayNameFor(d => d.ReleaseDate)</th>
+                <td>
+                    @Html.DisplayFor(d => d.ReleaseDate.Year)
+                    - @Html.DisplayFor(d => d.ReleaseDate.Month)
+                    - @Html.DisplayFor(d => d.ReleaseDate.Day)
+                </td>
+
+                @*<td>@Html.DisplayFor(d => d.ReleaseDate, "{ 0:d MMM yyyy }")</td>*@
+
+            </tr>
+
+            <tr>
+                <th>@Html.DisplayNameFor(d => d.DateAdded)</th>
+                <td>
+                    @Html.DisplayFor(d => d.DateAdded.Year)
+                    - @Html.DisplayFor(d => d.DateAdded.Month)
+                    - @Html.DisplayFor(d => d.DateAdded.Day)
+                </td>
+
+                @*<td>@Html.DisplayFor(d => d.DateAdded, "{0:d MMM yyyy}")</td>*@
+
+            </tr>
+            <tr>
+                <th>@Html.DisplayNameFor(d => d.Genre.GenreName)</th>
+                <td>@Html.DisplayFor(d => d.Genre.GenreName)</td>
+            </tr>
+            <tr>
+                <th>@Html.DisplayNameFor(d => d.NumberInStock)</th>
+                <td>@Html.DisplayFor(d => d.NumberInStock)</td>
+            </tr>
+            <tr>
+                <th>@Html.DisplayNameFor(d => d.MoviePic)</th>
+                <td>@Html.DisplayFor(d => d.MoviePic)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    @Html.ActionLink("Back to List", "Index", "Movies", htmlAttributes: new { @class = "btn btn-primary" })
+</div>
+<!-- ----------------------------------------------------------------------- -->

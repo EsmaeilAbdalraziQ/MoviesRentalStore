@@ -1,0 +1,78 @@
+﻿
+@model Cinema.ViewModels.MovieViewModel
+
+@{
+    ViewBag.Title = "MovieForm";
+}
+
+<h2>Movie Form</h2>
+
+@using (Html.BeginForm("Save", "Movies"))
+{
+    @Html.ValidationSummary(excludePropertyErrors: true, message: "Please Fix The Following Errors. !")
+
+    <div class="form-group">
+        @Html.LabelFor(l => l.Name)
+        @Html.TextBoxFor(t => t.Name, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Name)
+        @*@Html.ValidationMessageFor(m => m.Name, null, htmlAttributes: new { @class = "text-danger" })*@
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(l => l.ReleaseDate)
+        @Html.TextBoxFor(t => t.ReleaseDate, "{0:d MMM yyyy}", new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.ReleaseDate)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(l => l.GenreId)
+
+        <!-- #region Genre Drop Down List -->
+        @*@Html.DropDownListFor(P => P.GenreId, ViewBag.genre as SelectList, "Select Genre", htmlAttributes: new { @class = "form-control" })*@
+
+        @*@{
+            var item = new List<SelectListItem>
+        {
+                new SelectListItem
+                {
+                    Text="Select Genre",
+                    Value = "0",
+                    Disabled = true,
+                    Selected = true
+                }
+            };
+        }*@
+
+        @*@Html.DropDownListFor(t => t.GenreId,
+        new SelectList(Model.Genres, "GenreId", "GenreName"), optionLabel: "Select Genre",
+        htmlAttributes: new { @class = "form-control", @disabled = "disabled" })*@
+
+        <!-- #endregion -->
+
+        @Html.DropDownListFor(t => t.GenreId,
+            new SelectList(Model.Genres, "GenreId", "GenreName"), optionLabel: "Select Genre",
+            htmlAttributes: new { @class = "form-control" })
+
+        @Html.ValidationMessageFor(m => m.GenreId)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(l => l.NumberInStock, new { @class = "form-label" })
+        @Html.TextBoxFor(t => t.NumberInStock, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.NumberInStock)
+    </div>
+
+    
+    <div class="btn-group">
+
+        @Html.ActionLink("Back to List", "Index", "Movies", htmlAttributes: new { @class = "btn btn-primary" }) | |
+        @Html.HiddenFor(h => h.Id)
+        @Html.AntiForgeryToken()
+        <button type="submit" class="btn btn-success">Save</button>
+    </div>
+}
+
+@section scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+}

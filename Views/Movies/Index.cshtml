@@ -1,0 +1,120 @@
+﻿
+
+@model IEnumerable<Cinema.Models.Movie>
+
+@{
+    ViewBag.Title = "Movies";
+}
+
+<h2 class="alert alert-info text-center">Movies</h2>
+@*<div class="form-group">
+    @Html.ActionLink("New Movie", "Create", "Movies", null, htmlAttributes: new { @class = "btn btn-primary" })
+</div>*@
+<table id="movies" class="table table-bordered table-striped table-hover table-dark text-center">
+    <thead>
+        <tr>
+            <th>Movie</th>
+            <th>Genre</th>
+            <th>@Html.ActionLink("New Movie", "Create", "Movies", null, htmlAttributes: new { @class = "btn btn-primary" })</th>
+        </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+
+        <!-- #region From Movies Controller -->
+        <!--foreach (var movie in Model)
+        {
+            <tr>
+                <td>movie.Name</td>
+                <td>movie.ReleaseDate.ToString("yyyy")</td>
+                <td>movie.Genre.GenreName</td>
+
+                <td class="btn btn-group-justified">
+                Html.ActionLink("Delete", "Delete", "Movies", htmlAttributes: new { class = "btn btn-danger m-1 js-delete" }, routeValues: new { id = movie.Id })
+                <!--<button data-movie-id="movie.Id" class="btn btn-link btn-danger text-light m-1 js-delete">Delete</button>
+                    ||
+                    Html.ActionLink("Edit", "Edit", "Movies", htmlAttributes: new { class = "btn btn-info m-1" }, routeValues: new { id = movie.Id })
+                    ||
+                    Html.ActionLink("Details", "Details", "Movies", htmlAttributes: new { class = "btn btn-success m-1" }, routeValues: new { id = movie.Id })
+                </td>
+            </tr>
+        }-->
+        <!-- #endregion -->
+
+</table>
+<!-- ----------------------------------------------------------------------------------- -->
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+
+            //Before Handling Click Event We Get Refrence for Customers Table And Call DataTable
+            //$.fn.dataTable.ext.errMode = 'throw';
+            var table = $("#movies").DataTable({
+                //To Use API as a source of data We Need => Configuration Object
+                ajax: {
+                    url: "/api/movies",
+                    dataSrc: ""
+                },
+                "columns": [
+                    //Specify our column and Foreach Column we supply an Object
+                    //and in this object we specify properties of this column
+                    //We Use Data Property to Tell DataTable where to get data for this column
+                    {
+                        data: "name",
+                        render: function (data, type, movie) {
+                            return " <a href='/movies/details/" + movie.id + "'>" + movie.name + "</a>";
+                        }
+                    },
+                    {
+                        data: "genre.genreName"
+                        //data: "name"
+                    },
+                    {
+                        data: "id",
+                        render: function (data, type, movie) {
+
+                            return "<td class='btn btn-group-justified'>" +
+                                " <a href='/movies/edit/" + movie.id + "' class='btn-link' >" + "Edit" + "</a>" +
+                                "<button class='btn btn-link js-delete' data-movie-id=" + data + ">Delete</button>" +
+                                "</td >";
+                        }
+                    }
+                ]
+            });
+
+
+
+
+            //Use JQuery To Get Customers Table and find all elements with this class
+            //To Handle On("CLick") Event
+            $("#movies").on("click", ".js-delete", function () { //Only One Click Handler For All Delete Buttons
+                //Because Handler is Hocked For Selector = "customers" //And in this Handler We Have A Filtter = ".js-delete"
+                var button = $(this); //As Refrence for button
+
+                bootbox.confirm("Are You Sure To Delete This Customer ?", function (result) {
+                    if (result) {
+                        $.ajax({
+                            //url: "/api/customers/" + $(this).attr("data-customer-id"),
+                            url: "/api/movies/" + button.attr("data-movie-id"),
+                            method: "DELETE",
+                            success: function () {
+                                //remove the table raw include customer => this button with Htmlclass: "js-delete"
+                                //button.parents("tr").remove();
+                                table.row(button.parents("tr")).remove().draw();
+                            }
+                        });
+                    }
+                });
+
+                ////If this confirm function return true calling API Using JQuery Ajax
+                //if (confirm("Are you Sure to Delete This movie ?")) {
+                //    //$.Ajax({});
+                //}
+
+            });
+        });
+
+    </script>
+}

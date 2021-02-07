@@ -1,0 +1,71 @@
+﻿
+@model IEnumerable<Cinema.Models.Rental>
+
+@{
+    ViewBag.Title = "Rentals";
+}
+
+<h2 class="alert alert-info text-center">Rentals</h2>
+@*<div class="form-group">
+    @Html.ActionLink("New Rental", "New", "Rentals", null, htmlAttributes: new { @class = "btn btn-primary" })
+</div>*@
+<table id="rentals" class="table table-bordered table-striped table-hover table-dark text-justify">
+    <thead>
+        <tr class="text-justify">
+            <th></th>
+            <th class="text-center">
+                @Html.ActionLink("New Rental", "New", "Rentals", null, htmlAttributes: new { @class = "btn btn-primary" })
+            </th>
+        </tr>
+        <tr>
+            <th>Customer</th>
+            <th>Movies</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+    
+    #<!-- #region Table Body -->
+    <!--foreach (var rental in Model)
+    {
+        <tr>
+            <td>rental.Customer.Name</td>
+
+            <td>rental.Movie.Name</td>
+        </tr>
+    } -->
+    <!-- #endregion -->
+
+</table>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            //Before Handling Click Event We Get Refrence for Customers Table And Call DataTable
+
+            //var table =
+            $("#rentals").DataTable({
+                //To Use API as a source of data We Need => Configuration Object
+                processing: true,
+                ajax: {
+                    url: "/api/NewRentals",
+                    dataSrc: ""
+                },
+                columns: [
+                    //Specify our column and Foreach Column we supply an Object
+                    //and in this object we specify properties of this column
+                    //We Use Data Property to Tell DataTable where to get data for this column
+                    {
+                        data: "customerName"
+                        //render: function (data, type, rental, customer) {
+                        //    return " <a href='/customers/details/" + customer.Id + "'>" + rental.customerName + "</a>";
+                        //}
+                    },
+                    {
+                        data: "movieName"
+                    },
+                ]
+            });
+        });
+    </script>
+}

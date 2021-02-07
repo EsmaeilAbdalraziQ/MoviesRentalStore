@@ -1,0 +1,33 @@
+﻿@*using Cinema.Models*@ @*//For--ViewData[""]*@
+
+@*@model Cinema.Models.Movie*@
+
+@model Cinema.ViewModels.RandomMovieViewModels
+
+@{
+    ViewBag.Title = "Random";
+}
+
+@*<h2>@Model.Name</h2>*@
+@*<h2>@( ((Movie) ViewData["Movie"]).Name)</h2>*@
+@*<h2>@ViewBag.Movie</h2>*@
+
+@{ 
+    var className = Model.Customers.Count > 0 ? "popular" : null;
+}
+<h2 class="@className">@Model.Name</h2>
+
+@if (Model.Customers.Count == 0)
+{
+    <p  class="alert alert-warning">No One Rented This Before </p>
+}
+else
+{
+    <ul>
+        @foreach (var customer in Model.Customers)
+        {
+            <li>@customer.Name</li>
+        }
+    </ul>
+}
+

@@ -1,0 +1,63 @@
+﻿@model Cinema.Models.Customer
+@{
+    ViewBag.Title = "Details";
+}
+
+<!-- ----------------------------------------------------------------------- -->
+<div class="container">
+    <h2>Details</h2>
+    <input type="hidden" value="@Model.Id" />
+    @*@Html.HiddenFor(H => H.Id)*@
+    <table class="table table-bordered table-hover">
+        
+        <tbody class="bg-light text-dark">
+            <tr>
+                <th>Customer @Html.DisplayNameFor(d => d.Name)</th>
+                <td>@Html.DisplayFor(d => d.Name)</td>
+            </tr>
+            @if (Model.BirthDate.HasValue)
+            {
+                <tr>
+                    <th>Customer @Html.DisplayNameFor(d => d.BirthDate)</th>
+                    @*<td>@Html.DisplayFor(d => d.BirthDate, "{ 0:d MMM yyyy }")</td>*@
+                    
+                    <td>
+                        @Html.DisplayFor(d => d.BirthDate.Value.Year) 
+                        - @Html.DisplayFor(d => d.BirthDate.Value.Month) 
+                        - @Html.DisplayFor(d => d.BirthDate.Value.Day)
+                    </td>
+
+                    @*<td>@Html.DisplayFor(d => d.BirthDate.Value.ToShortDateString())</td>*@
+                </tr>
+            }
+
+            <tr>
+                <th>MemberShip Type @Html.DisplayNameFor(d => d.MemberShipType.Name)</th>
+                <td>@Html.DisplayFor(d => d.MemberShipType.Name)</td>
+            </tr>
+            <tr>
+                <th>@Html.DisplayNameFor(d => d.MemberShipType.SignUpFee)</th>
+                <td>@Html.DisplayFor(d => d.MemberShipType.SignUpFee)</td>
+            </tr>
+            <tr>
+                <th>@Html.DisplayNameFor(d => d.MemberShipType.DiscountRate)</th>
+                <td>@Html.DisplayFor(d => d.MemberShipType.DiscountRate)</td>
+            </tr>
+            <tr>
+                <th>@Html.DisplayNameFor(d => d.MemberShipType.DurationInMonth)</th>
+                <td>@Html.DisplayFor(d => d.MemberShipType.DurationInMonth)</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<!-- ----------------------------------------------------------------------- -->
+
+@*<ul>
+
+    <li class="h4">@Model.Name</li>
+
+    <li class="h4">@Model.MemberShipType.SignUpFee%</li>
+    <li class="h4">@Model.MemberShipType.DurationInMonth</li>
+    <li class="h4">@Model.MemberShipType.DiscountRate</li>
+</ul>*@
+
